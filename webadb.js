@@ -142,8 +142,7 @@ var Adb = {};
 
 	Adb.WebUSB.Transport.prototype.connectFastboot = function() {
 		return this.getDevice({ classCode: 255, subclassCode: 66, protocolCode: 3 })
-			.then(match => new Fastboot.WebUSB.Device(this, match))
-			.then(return fastboot); 
+			.then(match => new Fastboot.WebUSB.Device(this, match));
 	};
 
 	Adb.WebUSB.Device = function(transport, match) {

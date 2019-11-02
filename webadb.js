@@ -143,19 +143,7 @@ var Adb = {};
 	Adb.WebUSB.Transport.prototype.connectFastboot = function() {
 		return this.getDevice({ classCode: 255, subclassCode: 66, protocolCode: 3 })
 			.then(match => new Fastboot.WebUSB.Device(this, match))
-			.then(fastboot => fastboot.send("getvar:max-download-size")
-				.then(() => fastboot.receive()
-					.then(response => {
-						let cmd = decode_cmd(response.getUint32(0, true));
-						if (cmd == "FAIL")
-							throw new Error("Unable to open Fastboot");
-
-						fastboot.get_cmd = r => decode_cmd(r.getUint32(0, true));
-						fastboot.get_payload = r => r.buffer.slice(4);
-						return fastboot;
-					})
-				)
-			);
+			.then(return fastboot); 
 	};
 
 	Adb.WebUSB.Device = function(transport, match) {
@@ -208,7 +196,7 @@ var Adb = {};
 
 	Fastboot.WebUSB.Device = function(transport, match) {
 		this.transport = transport;
-		this.max_datasize = 512;
+		this.max_datasize = 64;
 
 		this.ep_in = get_ep_num(match.alt.endpoints, "in");
 		this.ep_out = get_ep_num(match.alt.endpoints, "out");
